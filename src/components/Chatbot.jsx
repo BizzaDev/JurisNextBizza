@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import emailjs from 'emailjs-com'
-import { EMAILJS_CONFIG } from '../config/emailjs.js'
+import { EMAILJS_CONFIG } from '../config/emailjs'
 import { 
   MessageCircle, 
   X, 
