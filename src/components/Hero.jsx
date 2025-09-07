@@ -55,7 +55,7 @@ const Hero = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="space-y-8"
+            className="space-y-6 sm:space-y-8"
           >
             <div className="space-y-4">
               <motion.div
@@ -116,18 +116,18 @@ const Hero = () => {
 
             {/* Stats */}
             <motion.div 
-              className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8 pt-6 sm:pt-8 border-t border-gray-200"
+              className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 lg:gap-8 pt-6 sm:pt-8 border-t border-gray-200"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
               {stats.map((stat, index) => (
-                <div key={index} className="text-center">
+                <div key={index} className="text-center px-1">
                   <div className="flex justify-center mb-1 sm:mb-2">
-                    <stat.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" />
+                    <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-primary-600" />
                   </div>
-                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
-                  <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">{stat.label}</div>
+                  <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-tight break-words">{stat.label}</div>
                 </div>
               ))}
             </motion.div>
