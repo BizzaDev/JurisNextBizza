@@ -40,7 +40,7 @@ const Hero = () => {
   }
 
       return (
-      <section id="home" className="relative min-h-screen flex items-center bg-gradient-to-br from-primary-50 to-white dark:from-gray-900 dark:to-gray-800 pt-20">
+      <section id="home" className="relative min-h-screen flex items-center bg-gradient-to-br from-primary-50 to-white dark:from-gray-900 dark:to-gray-800 pt-16 md:pt-20">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
@@ -49,7 +49,7 @@ const Hero = () => {
       </div>
 
       <div className="container-custom relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -66,7 +66,7 @@ const Hero = () => {
                 <EditableText
                   value={content?.hero?.title || 'Soluções Jurídicas Especializadas'}
                   onSave={(value) => updateContent('hero', 'title', value)}
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight"
                   tag="h1"
                   isAdmin={isAuthenticated}
                   isEditingMode={isEditing}
@@ -82,7 +82,7 @@ const Hero = () => {
                 <EditableText
                   value={content?.hero?.subtitle || 'Oferecemos consultoria jurídica especializada com mais de 15 anos de experiência. Nossa equipe está pronta para defender seus direitos e garantir a melhor solução para seu caso.'}
                   onSave={(value) => updateContent('hero', 'subtitle', value)}
-                  className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl"
+                  className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl"
                   tag="p"
                   multiline={true}
                   isAdmin={isAuthenticated}
@@ -93,7 +93,7 @@ const Hero = () => {
             </div>
 
             <motion.div 
-              className="flex flex-col sm:flex-row gap-4"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -116,18 +116,18 @@ const Hero = () => {
 
             {/* Stats */}
             <motion.div 
-              className="grid grid-cols-3 gap-8 pt-8 border-t border-gray-200"
+              className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8 pt-6 sm:pt-8 border-t border-gray-200"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="flex justify-center mb-2">
-                    <stat.icon className="w-8 h-8 text-primary-600" />
+                  <div className="flex justify-center mb-1 sm:mb-2">
+                    <stat.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" />
                   </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-300">{stat.label}</div>
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">{stat.label}</div>
                 </div>
               ))}
             </motion.div>
@@ -138,7 +138,7 @@ const Hero = () => {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="relative"
+            className="relative hidden lg:block"
           >
             <div className="relative bg-gradient-to-br from-primary-100 to-primary-200 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 shadow-2xl">
               {/* Placeholder for professional image */}

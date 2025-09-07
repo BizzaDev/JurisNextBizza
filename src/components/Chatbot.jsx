@@ -620,7 +620,7 @@ Precisa de mais alguma coisa?`,
       {/* Chat Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 rounded-full shadow-2xl hover:shadow-3xl flex items-center justify-center z-50 transition-all duration-300 chatbot-pulse"
+        className="fixed bottom-6 right-4 sm:right-6 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 rounded-full shadow-2xl hover:shadow-3xl flex items-center justify-center z-50 transition-all duration-300 chatbot-pulse"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         aria-label="Abrir chat"
@@ -645,7 +645,7 @@ Precisa de mais alguma coisa?`,
               exit={{ rotate: 90, opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <X className="w-7 h-7 text-white" />
+              <X className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
             </motion.div>
           ) : (
             <motion.div
@@ -655,7 +655,7 @@ Precisa de mais alguma coisa?`,
               exit={{ rotate: -90, opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <MessageCircle className="w-7 h-7 text-white" />
+              <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -669,7 +669,7 @@ Precisa de mais alguma coisa?`,
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.8 }}
             transition={{ duration: 0.3 }}
-            className="fixed bottom-28 right-6 w-96 h-[500px] bg-white rounded-3xl shadow-2xl border border-gray-200 z-50 flex flex-col overflow-hidden"
+            className="fixed bottom-28 right-3 sm:right-6 w-[calc(100vw-1.5rem)] sm:w-96 h-[500px] bg-white rounded-3xl shadow-2xl border border-gray-200 z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white p-4 rounded-t-3xl">
