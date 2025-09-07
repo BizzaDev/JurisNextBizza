@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import emailjs from 'emailjs-com'
-import { EMAILJS_CONFIG } from '../config/emailjs'
 import { 
   MessageCircle, 
   X, 
@@ -36,10 +34,6 @@ const Chatbot = () => {
   const [submitStatus, setSubmitStatus] = useState(null)
   const messagesEndRef = useRef(null)
 
-  // EmailJS Configuration
-  const EMAILJS_SERVICE_ID = EMAILJS_CONFIG.SERVICE_ID
-  const EMAILJS_TEMPLATE_ID = EMAILJS_CONFIG.TEMPLATE_ID
-  const EMAILJS_PUBLIC_KEY = EMAILJS_CONFIG.PUBLIC_KEY
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -555,34 +549,6 @@ ${areaInfo.services.map(service => `• ${service}`).join('\n')}
     }
   }
 
-  // Função para enviar e-mail via EmailJS
-  const sendEmail = async (formData) => {
-    try {
-      const templateParams = {
-        to_name: 'Dr. Mota',
-        from_name: formData.nome,
-        from_email: formData.email,
-        from_phone: formData.telefone,
-        area_direito: formData.area_direito,
-        urgencia: formData.urgencia === 'urgente' ? 'URGENTE' : 'Normal',
-        descricao_caso: formData.descricao_caso,
-        data_envio: new Date().toLocaleString('pt-BR'),
-        reply_to: formData.email
-      }
-
-      const response = await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      )
-
-      return { success: true, data: response }
-    } catch (error) {
-      console.error('Erro ao enviar e-mail:', error)
-      return { success: false, error: error.message }
-    }
-  }
 
   const handleFormSubmit = async () => {
     if (!currentFormData.nome || !currentFormData.email || !currentFormData.descricao_caso) {
@@ -593,7 +559,7 @@ ${areaInfo.services.map(service => `• ${service}`).join('\n')}
     setSubmitStatus(null)
 
     try {
-      // 1. Enviar WhatsApp automático
+      // Enviar WhatsApp automático
       const whatsappMessage = `📋 *NOVO FORMULÁRIO - SITE ADVOCACIA*
 
 *Nome:* ${currentFormData.nome}
@@ -611,63 +577,29 @@ Enviado através do chatbot em ${new Date().toLocaleString('pt-BR')}`
       const whatsappUrl = `https://wa.me/5592994536158?text=${encodeURIComponent(whatsappMessage)}`
       window.open(whatsappUrl, '_blank')
 
-      // 2. Enviar e-mail via EmailJS
-      const emailResult = await sendEmail(currentFormData)
-
-      if (emailResult.success) {
-        setSubmitStatus('success')
-        
-        // Mensagem de confirmação
-        const confirmMessage = {
-          id: Date.now() + 1,
-          text: `✅ **Formulário enviado com sucesso!**
+      setSubmitStatus('success')
+      
+      // Mensagem de confirmação
+      const confirmMessage = {
+        id: Date.now() + 1,
+        text: `✅ **Formulário enviado com sucesso!**
 
 **O que aconteceu:**
 📱 **WhatsApp:** Abriu automaticamente com todas as informações
-📧 **E-mail:** Enviado diretamente para mota.216573@gmail.com
 
 **Próximos passos:**
 1. **Confirme o envio** no WhatsApp que abriu
-2. **Verifique seu e-mail** - recebemos a mensagem
-3. **Aguarde nosso contato** em até 24h
+2. **Aguarde nosso contato** em até 24h
 
 **Seu caso foi registrado e nossa equipe entrará em contato em breve!**
 
 Precisa de mais alguma coisa?`,
-          sender: 'bot',
-          timestamp: new Date(),
-          type: 'confirmacao'
-        }
-
-        setMessages(prev => [...prev, confirmMessage])
-      } else {
-        setSubmitStatus('error')
-        
-        // Mensagem de erro
-        const errorMessage = {
-          id: Date.now() + 1,
-          text: `⚠️ **Formulário parcialmente enviado**
-
-**O que funcionou:**
-✅ **WhatsApp:** Abriu com todas as informações
-
-**O que não funcionou:**
-❌ **E-mail:** Houve um problema técnico
-
-**O que fazer:**
-1. **Confirme o envio** no WhatsApp
-2. **Envie manualmente** para mota.216573@gmail.com
-3. **Ou aguarde** - tentaremos novamente
-
-**Seu caso foi registrado via WhatsApp!**`,
-          sender: 'bot',
-          timestamp: new Date(),
-          type: 'erro'
-        }
-
-        setMessages(prev => [...prev, errorMessage])
+        sender: 'bot',
+        timestamp: new Date(),
+        type: 'confirmacao'
       }
 
+      setMessages(prev => [...prev, confirmMessage])
       setCurrentFormData(null)
       setShowOptions(true)
     } catch (error) {
@@ -934,7 +866,7 @@ Precisa de mais alguma coisa?`,
                       ) : (
                         <>
                           <Send className="w-4 h-4" />
-                          <span>Enviar para WhatsApp e E-mail</span>
+                          <span>Enviar para WhatsApp</span>
                         </>
                       )}
                     </button>
