@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import { createServiceCard, deleteServiceCard, selectAllServiceCards } from '../services/cads/services-cards';
+import { createServiceCard, deleteServiceCard, selectAllServiceCards, updateServiceCard } from '../services/cads/services-cards';
 
 const ContentContext = createContext()
 
@@ -283,10 +283,11 @@ export const ContentProvider = ({ children }) => {
 
   }, [])
 
-  const updateService = useCallback((id, updatedService) => {
-    setServices(prev => prev.map(service => 
-      service.id === id ? { ...service, ...updatedService } : service
-    ))
+  const updateService = useCallback(async (id, updatedService) => {
+    const response = await updateServiceCard(id, updatedService)
+    if(response){
+     await getAllServices()
+    }
   }, [])
 
   const deleteService = useCallback(async (id) => {
@@ -298,7 +299,7 @@ export const ContentProvider = ({ children }) => {
 
   const getAllServices = useCallback(async () => {
     const response = await selectAllServiceCards()
-    console.log(response)
+    console.log('dadps.response',response)
     if(response){
       setServices(response)
     }

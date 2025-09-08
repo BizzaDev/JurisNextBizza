@@ -21,7 +21,6 @@ export async function createServiceCard(service) {
       return null
     }
 
-    console.log('Service salvo com sucesso no Supabase:', data[0])
     return data[0]        // retorna o registro criado
   } catch (error) {
     console.error('Erro na função createServiceCard:', error)
@@ -85,4 +84,40 @@ export async function deleteServiceCard(id) {
       return null;
     }
   }
+
+
+  export async function updateServiceCard(id, updates) {
+    try {
+      console.log('Tentando atualizar service com id:', id, 'com os dados:', updates);
+  
+      const { data, error } = await supabase
+        .from('service_cards')
+        .update(updates)   // objeto com os campos que você quer atualizar
+        .eq('id', id)      // condição: registro que deve ser atualizado
+        .select();         // retorna o registro atualizado
+  
+      if (error) {
+        console.error('Erro ao atualizar serviço no Supabase:', error);
+        console.error('Detalhes do erro:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        return null;
+      }
+  
+      if (!data || data.length === 0) {
+        console.warn('Nenhum registro encontrado para atualizar com id:', id);
+        return null;
+      }
+  
+      console.log('Service atualizado com sucesso:', data[0]);
+      return data[0]; // retorna o registro atualizado
+    } catch (error) {
+      console.error('Erro na função updateServiceCard:', error);
+      return null;
+    }
+  }
+  
   

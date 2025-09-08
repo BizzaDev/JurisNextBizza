@@ -1,23 +1,29 @@
 import React from 'react'
-import { motion } from 'framer-motion'
 import { 
   Scale, 
-  Briefcase, 
   Building2, 
   Users, 
-  FileText, 
   Shield,
-  ArrowRight 
+  ArrowRight, 
+  Building
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useContent } from '../contexts/ContentContext'
 import EditableText from './EditableText'
 
+// Mapa de nomes de ícones conforme enviados para a API
+const iconMap = {
+  Scale: Scale,
+  Building: Building2,
+  Users: Users,
+  Shield: Shield
+}
+
 const Services = () => {
   const { isAuthenticated } = useAuth()
   const { content, services: adminServices, isEditing, updateContent } = useContent()
-  
-  // Verificar se os contextos estão disponíveis
+
+  // Se não houver conteúdo, mostra placeholder
   if (!content) {
     return (
       <section id="services" className="py-20 bg-gray-50 dark:bg-gray-800">
@@ -30,48 +36,26 @@ const Services = () => {
       </section>
     )
   }
-  
-  // Use admin services if available, otherwise use default
-  const services = adminServices.length > 0 ? adminServices.map(service => ({
-    icon: Scale, // Default icon, will be mapped based on service.icon
-    title: service.title,
-    description: service.description,
-    features: [], // Simplified for now
-    color: 'from-blue-500 to-blue-600'
-  })) :[]
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6
-      }
-    }
-  }
+  // Mapeia serviços da API para o layout do front
+  const services = adminServices.length > 0 
+    ? adminServices.map(service => {
+        const Icon = iconMap[service.icon] || Scale // fallback caso não exista
+        return {
+          icon: Icon,
+          title: service.title,
+          description: service.description,
+          features: service.features || [],
+          color: service.color || 'from-blue-500 to-blue-600'
+        }
+      })
+    : []
 
   return (
     <section id="services" className="section-padding bg-gray-50 dark:bg-gray-800">
       <div className="container-custom">
         {/* Section Header */}
-        <motion.div 
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
+        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Nossos Serviços
           </h2>
@@ -80,30 +64,23 @@ const Services = () => {
             onSave={(value) => updateContent('services', 'subtitle', value)}
             className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
             tag="p"
-            multiline={true}
+            multiline
             isAdmin={isAuthenticated}
             isEditingMode={isEditing}
             maxLength={200}
           />
-        </motion.div>
+        </div>
 
         {/* Services Grid */}
-        <motion.div 
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={itemVariants}
               className="bg-white dark:bg-gray-700 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
             >
               {/* Icon */}
               <div className={`w-16 h-16 bg-gradient-to-r ${service.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                <service.icon className="w-8 h-8 text-white" />
+               {service.icon ? <service.icon className="w-8 h-8 text-white" /> : <Scale className="w-8 h-8 text-white" />}
               </div>
 
               {/* Content */}
@@ -130,18 +107,12 @@ const Services = () => {
                 <span>Saiba mais</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
               </button>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* CTA Section */}
-        <motion.div 
-          className="text-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
-        >
+        <div className="text-center mt-16">
           <div className="bg-primary-600 rounded-2xl p-8 md:p-12 text-white">
             <h3 className="text-2xl md:text-3xl font-bold mb-4">
               Precisa de Ajuda Jurídica?
@@ -162,7 +133,7 @@ const Services = () => {
               </button>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )
