@@ -23,7 +23,7 @@ const defaultData = {
       hours: "Segunda a Sexta: 8h às 18h"
     },
     hero: {
-      title: "Defendemos seus direitos com excelência",
+      title: "Defendemos seus direitos com excelênciaaa",
       subtitle: "Especialistas em direito civil, trabalhista e empresarial. Oferecemos soluções jurídicas personalizadas com transparência, agilidade e resultados comprovados.",
       description: "Oferecemos serviços jurídicos especializados para empresas e pessoas físicas, garantindo a melhor defesa dos seus interesses.",
       protectionTitle: "Proteção Legal",
