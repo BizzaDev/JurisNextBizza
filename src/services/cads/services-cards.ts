@@ -59,3 +59,30 @@ export async function deleteServiceCard(id) {
     }
   }
   
+
+  export async function selectAllServiceCards() {
+    try {
+      const { data, error } = await supabase
+        .from('service_cards')
+        .select('*')
+        .order('id', { ascending: true }); // você pode trocar por created_at, se tiver esse campo
+  
+      if (error) {
+        console.error('Erro ao buscar todos os serviços no Supabase:', error);
+        console.error('Detalhes do erro:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        return null;
+      }
+  
+      console.log('Todos os registros da tabela service_cards:', data);
+      return data; // retorna todos os registros
+    } catch (error) {
+      console.error('Erro na função selectAllServiceCards:', error);
+      return null;
+    }
+  }
+  

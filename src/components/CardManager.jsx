@@ -324,7 +324,11 @@ const CardManager = React.memo(({
       )}
 
       <div className="space-y-4">
-        {cards.map(renderCard)}
+        {cards.map((card, index) => (
+          <div key={card.id || index}>
+            {renderCard(card)}
+          </div>
+        ))}
       </div>
 
       {cards.length === 0 && (

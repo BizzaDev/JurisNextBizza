@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import { createServiceCard, deleteServiceCard } from '../services/cads/services-cards';
+import { createServiceCard, deleteServiceCard, selectAllServiceCards } from '../services/cads/services-cards';
 
 const ContentContext = createContext()
 
@@ -185,19 +185,23 @@ export const ContentProvider = ({ children }) => {
   const [photos, setPhotos] = useState(defaultData.photos)
   const [isEditing, setIsEditing] = useState(false)
 
+
+
   // Carregar dados salvos
   useEffect(() => {
-    const loadData = () => {
+    const loadData = async () => {
       try {
         const savedContent = localStorage.getItem('admin-content')
-        const savedServices = localStorage.getItem('admin-services')
         const savedTestimonials = localStorage.getItem('admin-testimonials')
         const savedPhotos = localStorage.getItem('admin-photos')
         
         if (savedContent) setContent(JSON.parse(savedContent))
-        if (savedServices) setServices(JSON.parse(savedServices))
         if (savedTestimonials) setTestimonials(JSON.parse(savedTestimonials))
         if (savedPhotos) setPhotos(JSON.parse(savedPhotos))
+        
+        // Carregar serviços do banco de dados
+        await getAllServices()
+        
       } catch (error) {
         console.error('Error loading data:', error)
       }
@@ -211,9 +215,7 @@ export const ContentProvider = ({ children }) => {
     localStorage.setItem('admin-content', JSON.stringify(content))
   }, [content])
 
-  useEffect(() => {
-    localStorage.setItem('admin-services', JSON.stringify(services))
-  }, [services])
+  // Serviços agora são carregados do banco de dados, não salvos no localStorage
 
   useEffect(() => {
     localStorage.setItem('admin-testimonials', JSON.stringify(testimonials))
@@ -270,12 +272,15 @@ export const ContentProvider = ({ children }) => {
     
     // Sempre adiciona ao estado local, independente da resposta do banco
    
-    
+    if(response){
+
     const newService = {
       ...service,
       id: response?.id || id
     }
     setServices(prev => [...prev, newService])
+   }
+
   }, [])
 
   const updateService = useCallback((id, updatedService) => {
@@ -290,6 +295,16 @@ export const ContentProvider = ({ children }) => {
     setServices(prev => prev.filter(service => service.id !== id))
     }
   }, [])
+
+  const getAllServices = useCallback(async () => {
+    const response = await selectAllServiceCards()
+    console.log(response)
+    if(response){
+      setServices(response)
+    }
+  }, [services])
+
+
 
   // Funções CRUD para depoimentos
   const addTestimonial = useCallback((testimonial) => {
@@ -372,7 +387,7 @@ export const ContentProvider = ({ children }) => {
   const saveContent = useCallback(async () => {
     try {
       localStorage.setItem('admin-content', JSON.stringify(content))
-      localStorage.setItem('admin-services', JSON.stringify(services))
+      // Serviços são salvos no banco de dados, não no localStorage
       localStorage.setItem('admin-testimonials', JSON.stringify(testimonials))
       localStorage.setItem('admin-photos', JSON.stringify(photos))
       console.log('Conteúdo salvo com sucesso!')
@@ -380,7 +395,7 @@ export const ContentProvider = ({ children }) => {
       console.error('Erro ao salvar conteúdo:', error)
       throw error
     }
-  }, [content, services, testimonials, photos])
+  }, [content, testimonials, photos])
 
   // Valor do contexto
   const value = useMemo(() => ({
@@ -401,6 +416,7 @@ export const ContentProvider = ({ children }) => {
     addService,
     updateService,
     deleteService,
+    getAllServices,
     
     // CRUD de depoimentos
     addTestimonial,
@@ -428,6 +444,7 @@ export const ContentProvider = ({ children }) => {
     addService,
     updateService,
     deleteService,
+    getAllServices,
     addTestimonial,
     updateTestimonial,
     deleteTestimonial,
