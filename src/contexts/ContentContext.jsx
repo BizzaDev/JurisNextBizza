@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
+import { v4 as uuidv4 } from 'uuid';
+import { createServiceCard, deleteServiceCard } from '../services/cads/services-cards';
 
 const ContentContext = createContext()
 
@@ -10,186 +12,146 @@ export const useContent = () => {
   return context
 }
 
-// Função para debounce
-const debounce = (func, wait) => {
-  let timeout
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout)
-      func(...args)
+// Dados padrão
+const defaultData = {
+  content: {
+    header: {
+      logo: "Advocacia",
+      tagline: "Soluções Jurídicas",
+      phone: "(92) 99453-6158",
+      email: "contato@advocacia.com.br",
+      hours: "Segunda a Sexta: 8h às 18h"
+    },
+    hero: {
+      title: "Defendemos seus direitos com excelência",
+      subtitle: "Especialistas em direito civil, trabalhista e empresarial. Oferecemos soluções jurídicas personalizadas com transparência, agilidade e resultados comprovados.",
+      description: "Oferecemos serviços jurídicos especializados para empresas e pessoas físicas, garantindo a melhor defesa dos seus interesses.",
+      protectionTitle: "Proteção Legal",
+      protectionSubtitle: "Defesa especializada",
+      features: [
+        "Consultoria jurídica personalizada",
+        "Atendimento 24/7 para emergências",
+        "Transparência total nos processos"
+      ],
+      stats: [
+        { value: "500+", label: "Casos Resolvidos" },
+        { value: "15+", label: "Anos de Experiência" },
+        { value: "98%", label: "Taxa de Sucesso" }
+      ]
+    },
+    services: {
+      title: "Nossos Serviços",
+      subtitle: "Oferecemos soluções jurídicas especializadas em diversas áreas do direito, sempre com foco na excelência e nos melhores resultados para nossos clientes."
+    },
+    about: {
+      title: "Sobre Nós",
+      subtitle: "Uma equipe de advogados especializados comprometida em oferecer soluções jurídicas de excelência com transparência e agilidade.",
+      historyTitle: "Nossa História e Missão",
+      historyText: "Fundado em 2008, nosso escritório nasceu da paixão por defender os direitos de nossos clientes com excelência e dedicação. Ao longo dos anos, construímos uma reputação sólida baseada em resultados consistentes e relacionamentos duradouros.",
+      missionText: "Nossa missão é oferecer soluções jurídicas personalizadas, sempre priorizando a transparência, agilidade e o melhor resultado possível para cada caso. Acreditamos que o direito deve ser acessível e compreensível para todos.",
+      valuesTitle: "Nossos Valores",
+      values: [
+        {
+          title: "Excelência",
+          description: "Comprometimento com a qualidade e resultados excepcionais em cada caso."
+        },
+        {
+          title: "Transparência",
+          description: "Comunicação clara e honesta em todas as etapas do processo jurídico."
+        },
+        {
+          title: "Agilidade",
+          description: "Respostas rápidas e eficientes para atender às necessidades dos clientes."
+        },
+        {
+          title: "Foco no Cliente",
+          description: "Soluções personalizadas que atendem às necessidades específicas de cada caso."
+        }
+      ],
+      achievementsTitle: "Nossos Números",
+      achievements: [
+        {
+          number: "500+",
+          label: "Casos Resolvidos"
+        },
+        {
+          number: "15+",
+          label: "Anos de Experiência"
+        }
+      ],
+      photosTitle: "Nossos Clientes",
+      team: [
+        {
+          id: 1,
+          name: "Dr. João Silva",
+          role: "Sócio Fundador",
+          specialty: "Direito Civil e Empresarial",
+          experience: "15 anos",
+          photo: null
+        },
+        {
+          id: 2,
+          name: "Dra. Maria Santos",
+          role: "Sócia",
+          specialty: "Direito Trabalhista",
+          experience: "12 anos",
+          photo: null
+        },
+        {
+          id: 3,
+          name: "Dr. Pedro Costa",
+          role: "Advogado Sênior",
+          specialty: "Direito Tributário",
+          experience: "10 anos",
+          photo: null
+        }
+      ]
+    },
+    testimonials: {
+      title: "O que nossos clientes dizem",
+      subtitle: "Depoimentos de quem confia em nosso trabalho"
+    },
+    contact: {
+      title: "Entre em Contato",
+      subtitle: "Estamos prontos para ajudá-lo com suas questões jurídicas. Entre em contato conosco e agende uma consulta gratuita.",
+      infoTitle: "Informações de Contato",
+      info: [
+        {
+          title: "Telefone",
+          details: ["(92) 99453-6158", "(92) 3333-4444"],
+          description: "Segunda a Sexta, 8h às 18h"
+        },
+        {
+          title: "E-mail",
+          details: ["contato@advocacia.com.br", "emergencia@advocacia.com.br"],
+          description: "Resposta em até 24 horas"
+        },
+        {
+          title: "Endereço",
+          details: ["Av. Paulista, 1000", "Bela Vista - São Paulo/SP", "CEP: 01310-100"],
+          description: "Próximo ao metrô Trianon-MASP"
+        },
+        {
+          title: "Horário de Funcionamento",
+          details: ["Segunda a Sexta: 8h às 18h", "Sábado: 8h às 12h"],
+          description: "Atendimento de emergência 24h"
+        }
+      ],
+      emergencyTitle: "Emergência 24h",
+      emergencyText: "Para casos urgentes que não podem esperar o horário comercial.",
+      emergencyPhone: "(92) 99453-6158",
+      formTitle: "Envie sua Mensagem"
+    },
+    footer: {
+      description: "Sua advocacia de confiança, oferecendo soluções jurídicas especializadas com transparência e excelência.",
+      address: "Rua das Flores, 123 - Centro, Manaus - AM",
+      phone: "(92) 99453-6158",
+      email: "contato@advocacia.com.br",
+      copyright: "© 2024 Advocacia. Todos os direitos reservados."
     }
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
-  }
-}
-
-// Conteúdo padrão
-const getDefaultContent = () => ({
-  header: {
-    logo: "Advocacia",
-    tagline: "Soluções Jurídicas",
-    phone: "(92) 99453-6158",
-    email: "contato@advocacia.com.br",
-    hours: "Segunda a Sexta: 8h às 18h"
   },
-  hero: {
-    title: "Defendemos seus direitos com excelência",
-    subtitle: "Especialistas em direito civil, trabalhista e empresarial. Oferecemos soluções jurídicas personalizadas com transparência, agilidade e resultados comprovados.",
-    description: "Oferecemos serviços jurídicos especializados para empresas e pessoas físicas, garantindo a melhor defesa dos seus interesses.",
-    protectionTitle: "Proteção Legal",
-    protectionSubtitle: "Defesa especializada",
-    features: [
-      "Consultoria jurídica personalizada",
-      "Atendimento 24/7 para emergências",
-      "Transparência total nos processos"
-    ],
-    stats: [
-      { value: "500+", label: "Casos Resolvidos" },
-      { value: "15+", label: "Anos de Experiência" },
-      { value: "98%", label: "Taxa de Sucesso" }
-    ]
-  },
-  services: {
-    title: "Nossos Serviços",
-    subtitle: "Oferecemos soluções jurídicas especializadas em diversas áreas do direito, sempre com foco na excelência e nos melhores resultados para nossos clientes."
-  },
-  about: {
-    title: "Sobre Nós",
-    subtitle: "Uma equipe de advogados especializados comprometida em oferecer soluções jurídicas de excelência com transparência e agilidade.",
-    historyTitle: "Nossa História e Missão",
-    historyText: "Fundado em 2008, nosso escritório nasceu da paixão por defender os direitos de nossos clientes com excelência e dedicação. Ao longo dos anos, construímos uma reputação sólida baseada em resultados consistentes e relacionamentos duradouros.",
-    missionText: "Nossa missão é oferecer soluções jurídicas personalizadas, sempre priorizando a transparência, agilidade e o melhor resultado possível para cada caso. Acreditamos que o direito deve ser acessível e compreensível para todos.",
-    valuesTitle: "Nossos Valores",
-    values: [
-      {
-        title: "Excelência",
-        description: "Comprometimento com a qualidade e resultados excepcionais em cada caso."
-      },
-      {
-        title: "Transparência",
-        description: "Comunicação clara e honesta em todas as etapas do processo jurídico."
-      },
-      {
-        title: "Agilidade",
-        description: "Respostas rápidas e eficientes para atender às necessidades dos clientes."
-      },
-      {
-        title: "Foco no Cliente",
-        description: "Soluções personalizadas que atendem às necessidades específicas de cada caso."
-      }
-    ],
-    achievementsTitle: "Nossos Números",
-    achievements: [
-      {
-        number: "500+",
-        label: "Casos Resolvidos"
-      },
-      {
-        number: "15+",
-        label: "Anos de Experiência"
-      }
-    ],
-    photosTitle: "Nossos Clientes",
-    team: [
-      {
-        id: 1,
-        name: "Dr. João Silva",
-        role: "Sócio Fundador",
-        specialty: "Direito Civil e Empresarial",
-        experience: "15 anos",
-        photo: null
-      },
-      {
-        id: 2,
-        name: "Dra. Maria Santos",
-        role: "Sócia",
-        specialty: "Direito Trabalhista",
-        experience: "12 anos",
-        photo: null
-      },
-      {
-        id: 3,
-        name: "Dr. Pedro Costa",
-        role: "Advogado Sênior",
-        specialty: "Direito Tributário",
-        experience: "10 anos",
-        photo: null
-      }
-    ]
-  },
-  testimonials: {
-    title: "O que nossos clientes dizem",
-    subtitle: "Depoimentos de quem confia em nosso trabalho"
-  },
-  contact: {
-    title: "Entre em Contato",
-    subtitle: "Estamos prontos para ajudá-lo com suas questões jurídicas. Entre em contato conosco e agende uma consulta gratuita.",
-    infoTitle: "Informações de Contato",
-    info: [
-      {
-        title: "Telefone",
-        details: ["(92) 99453-6158", "(92) 3333-4444"],
-        description: "Segunda a Sexta, 8h às 18h"
-      },
-      {
-        title: "E-mail",
-        details: ["contato@advocacia.com.br", "emergencia@advocacia.com.br"],
-        description: "Resposta em até 24 horas"
-      },
-      {
-        title: "Endereço",
-        details: ["Av. Paulista, 1000", "Bela Vista - São Paulo/SP", "CEP: 01310-100"],
-        description: "Próximo ao metrô Trianon-MASP"
-      },
-      {
-        title: "Horário de Funcionamento",
-        details: ["Segunda a Sexta: 8h às 18h", "Sábado: 8h às 12h"],
-        description: "Atendimento de emergência 24h"
-      }
-    ],
-    emergencyTitle: "Emergência 24h",
-    emergencyText: "Para casos urgentes que não podem esperar o horário comercial.",
-    emergencyPhone: "(92) 99453-6158",
-    formTitle: "Envie sua Mensagem"
-  },
-  footer: {
-    description: "Sua advocacia de confiança, oferecendo soluções jurídicas especializadas com transparência e excelência.",
-    address: "Rua das Flores, 123 - Centro, Manaus - AM",
-    phone: "(92) 99453-6158",
-    email: "contato@advocacia.com.br",
-    copyright: "© 2024 Advocacia. Todos os direitos reservados."
-  }
-})
-
-export const ContentProvider = ({ children }) => {
-  const [content, setContent] = useState(getDefaultContent())
-  const [services, setServices] = useState([
-    {
-      id: 1,
-      title: "Direito Civil",
-      description: "Atendimento especializado em questões civis, contratos e responsabilidade civil.",
-      icon: "Scale"
-    },
-    {
-      id: 2,
-      title: "Direito Empresarial",
-      description: "Consultoria jurídica para empresas, fusões, aquisições e compliance.",
-      icon: "Building"
-    },
-    {
-      id: 3,
-      title: "Direito Trabalhista",
-      description: "Defesa dos direitos trabalhistas e previdenciários de empregados e empregadores.",
-      icon: "Users"
-    },
-    {
-      id: 4,
-      title: "Direito Criminal",
-      description: "Defesa criminal especializada com foco na proteção dos direitos fundamentais.",
-      icon: "Shield"
-    }
-  ])
-  const [testimonials, setTestimonials] = useState([
+  
+  testimonials: [
     {
       id: 1,
       name: "Maria Silva",
@@ -211,144 +173,107 @@ export const ContentProvider = ({ children }) => {
       content: "Parceria de longa data. Sempre atenciosos e com resultados excepcionais.",
       rating: 5
     }
-  ])
-  const [photos, setPhotos] = useState([])
+  ],
+  photos: []
+}
+
+export const ContentProvider = ({ children }) => {
+  // Estados
+  const [content, setContent] = useState(defaultData.content)
+  const [services, setServices] = useState([])
+  const [testimonials, setTestimonials] = useState(defaultData.testimonials)
+  const [photos, setPhotos] = useState(defaultData.photos)
   const [isEditing, setIsEditing] = useState(false)
-
-  // Função debounced para salvar
-  const debouncedSave = useCallback(
-    debounce((key, data) => {
-      try {
-        localStorage.setItem(key, JSON.stringify(data))
-      } catch (error) {
-        console.error(`Error saving to localStorage key "${key}":`, error)
-      }
-    }, 500),
-    []
-  )
-
-  // Função para validar e corrigir dados de contato
-  const validateContactData = (content) => {
-    if (!content || !content.contact) {
-      return content
-    }
-
-    // Garantir que contact.info seja sempre um array
-    if (!Array.isArray(content.contact.info)) {
-      console.warn('contact.info não é um array, corrigindo...')
-      content.contact.info = getDefaultContent().contact.info
-    }
-
-    // Validar cada item do array
-    if (Array.isArray(content.contact.info)) {
-      content.contact.info = content.contact.info.map((item, index) => {
-        const defaultItem = getDefaultContent().contact.info[index]
-        return {
-          title: item.title || defaultItem?.title || 'Contato',
-          details: Array.isArray(item.details) ? item.details : [item.details || ''],
-          description: item.description || defaultItem?.description || ''
-        }
-      })
-    }
-
-    return content
-  }
 
   // Carregar dados salvos
   useEffect(() => {
-    try {
-      const savedContent = localStorage.getItem('admin-content')
-      const savedServices = localStorage.getItem('admin-services')
-      const savedTestimonials = localStorage.getItem('admin-testimonials')
-      const savedPhotos = localStorage.getItem('admin-photos')
-      
-      if (savedContent) {
-        const parsedContent = JSON.parse(savedContent)
-        const validatedContent = validateContactData(parsedContent)
-        setContent(validatedContent)
+    const loadData = () => {
+      try {
+        const savedContent = localStorage.getItem('admin-content')
+        const savedServices = localStorage.getItem('admin-services')
+        const savedTestimonials = localStorage.getItem('admin-testimonials')
+        const savedPhotos = localStorage.getItem('admin-photos')
+        
+        if (savedContent) setContent(JSON.parse(savedContent))
+        if (savedServices) setServices(JSON.parse(savedServices))
+        if (savedTestimonials) setTestimonials(JSON.parse(savedTestimonials))
+        if (savedPhotos) setPhotos(JSON.parse(savedPhotos))
+      } catch (error) {
+        console.error('Error loading data:', error)
       }
-      if (savedServices) {
-        setServices(JSON.parse(savedServices))
-      }
-      if (savedTestimonials) {
-        setTestimonials(JSON.parse(savedTestimonials))
-      }
-      if (savedPhotos) {
-        setPhotos(JSON.parse(savedPhotos))
-      }
-    } catch (error) {
-      console.error('Error loading content:', error)
-      // Em caso de erro, usar dados padrão
-      setContent(getDefaultContent())
     }
+    
+    loadData()
   }, [])
 
-  // Salvar dados com debounce
+  // Salvar dados automaticamente
   useEffect(() => {
-    debouncedSave('admin-content', content)
-  }, [content, debouncedSave])
-
-  useEffect(() => {
-    debouncedSave('admin-services', services)
-  }, [services, debouncedSave])
+    localStorage.setItem('admin-content', JSON.stringify(content))
+  }, [content])
 
   useEffect(() => {
-    debouncedSave('admin-testimonials', testimonials)
-  }, [testimonials, debouncedSave])
+    localStorage.setItem('admin-services', JSON.stringify(services))
+  }, [services])
 
   useEffect(() => {
-    debouncedSave('admin-photos', photos)
-  }, [photos, debouncedSave])
+    localStorage.setItem('admin-testimonials', JSON.stringify(testimonials))
+  }, [testimonials])
 
-  // Função para atualizar campos aninhados
-  const setNestedValue = (obj, path, value) => {
-    const keys = path.split('.')
-    
-    // Deep clone para evitar mutação do estado original
-    const result = JSON.parse(JSON.stringify(obj))
-    let current = result
-    
-    for (let i = 0; i < keys.length - 1; i++) {
-      const key = keys[i]
-      if (!current[key] || typeof current[key] !== 'object') {
-        current[key] = {}
-      }
-      current = current[key]
-    }
-    
-    current[keys[keys.length - 1]] = value
-    return result
-  }
+  useEffect(() => {
+    localStorage.setItem('admin-photos', JSON.stringify(photos))
+  }, [photos])
 
-  // Funções CRUD para conteúdo
+  // Função para atualizar conteúdo
   const updateContent = useCallback((section, field, value) => {
     setContent(prev => {
-      try {
-        if (field.includes('.')) {
-          // Campo aninhado (ex: info.3.details.0)
-          return setNestedValue(prev, `${section}.${field}`, value)
-        } else {
-          // Campo simples
-          return {
-            ...prev,
-            [section]: {
-              ...prev[section],
-              [field]: value
-            }
+      if (field.includes('.')) {
+        // Campo aninhado
+        const keys = field.split('.')
+        const newContent = { ...prev }
+        let current = newContent[section]
+        
+        for (let i = 0; i < keys.length - 1; i++) {
+          current = current[keys[i]]
+        }
+        current[keys[keys.length - 1]] = value
+        
+        return newContent
+      } else {
+        // Campo simples
+        return {
+          ...prev,
+          [section]: {
+            ...prev[section],
+            [field]: value
           }
         }
-      } catch (error) {
-        console.error('Erro em updateContent:', error)
-        return prev
       }
     })
   }, [])
 
   // Funções CRUD para serviços
-  const addService = useCallback((service) => {
+  const addService = useCallback(async (service) => {
+    const id  = crypto.randomUUID()
+    const newServiceApi = {
+      id: id, // ou outro gerador de ID
+      title: service.title,        // varchar
+      description: service.description, // text
+      icon: service.icon,          // varchar
+      color: service.color || '#ffffff', // varchar, padrão opcional
+      order_index: service.order_index || 0, // int2, padrão opcional
+      is_active: service.is_active ?? true,  // bool, padrão true
+      created_at: new Date().toISOString(),  // timestamp
+      updated_at: new Date().toISOString(),  // timestamp
+    };
+
+    const response = await createServiceCard(newServiceApi)
+    
+    // Sempre adiciona ao estado local, independente da resposta do banco
+   
+    
     const newService = {
       ...service,
-      id: Date.now()
+      id: response?.id || id
     }
     setServices(prev => [...prev, newService])
   }, [])
@@ -359,16 +284,16 @@ export const ContentProvider = ({ children }) => {
     ))
   }, [])
 
-  const deleteService = useCallback((id) => {
+  const deleteService = useCallback(async (id) => {
+    const response = await deleteServiceCard(id)
+    if(response){
     setServices(prev => prev.filter(service => service.id !== id))
+    }
   }, [])
 
   // Funções CRUD para depoimentos
   const addTestimonial = useCallback((testimonial) => {
-    const newTestimonial = {
-      ...testimonial,
-      id: Date.now()
-    }
+    const newTestimonial = { ...testimonial, id: Date.now() }
     setTestimonials(prev => [...prev, newTestimonial])
   }, [])
 
@@ -384,10 +309,7 @@ export const ContentProvider = ({ children }) => {
 
   // Funções CRUD para fotos
   const addPhoto = useCallback((photo) => {
-    const newPhoto = {
-      ...photo,
-      id: Date.now()
-    }
+    const newPhoto = { ...photo, id: Date.now() }
     setPhotos(prev => [...prev, newPhoto])
   }, [])
 
@@ -401,7 +323,7 @@ export const ContentProvider = ({ children }) => {
     setPhotos(prev => prev.filter(photo => photo.id !== id))
   }, [])
 
-  // Funções de gerenciamento da equipe
+  // Funções CRUD para equipe
   const addTeamMember = useCallback((memberData) => {
     const newMember = {
       id: Date.now(),
@@ -411,65 +333,86 @@ export const ContentProvider = ({ children }) => {
       experience: memberData.experience || "0 anos",
       photo: memberData.photo || null
     }
-    updateContent('about', 'team', [...content.about.team, newMember])
-  }, [content.about.team, updateContent])
+    setContent(prev => ({
+      ...prev,
+      about: {
+        ...prev.about,
+        team: [...prev.about.team, newMember]
+      }
+    }))
+  }, [])
 
   const updateTeamMember = useCallback((id, memberData) => {
-    const updatedTeam = content.about.team.map(member => 
-      member.id === id ? { ...member, ...memberData } : member
-    )
-    updateContent('about', 'team', updatedTeam)
-  }, [content.about.team, updateContent])
+    setContent(prev => ({
+      ...prev,
+      about: {
+        ...prev.about,
+        team: prev.about.team.map(member => 
+          member.id === id ? { ...member, ...memberData } : member
+        )
+      }
+    }))
+  }, [])
 
   const deleteTeamMember = useCallback((id) => {
-    const updatedTeam = content.about.team.filter(member => member.id !== id)
-    updateContent('about', 'team', updatedTeam)
-  }, [content.about.team, updateContent])
+    setContent(prev => ({
+      ...prev,
+      about: {
+        ...prev.about,
+        team: prev.about.team.filter(member => member.id !== id)
+      }
+    }))
+  }, [])
 
+  // Controle de edição
   const toggleEditing = useCallback(() => {
     setIsEditing(prev => !prev)
   }, [])
 
   const saveContent = useCallback(async () => {
     try {
-      // Salvar conteúdo principal
       localStorage.setItem('admin-content', JSON.stringify(content))
-      
-      // Salvar serviços
       localStorage.setItem('admin-services', JSON.stringify(services))
-      
-      // Salvar depoimentos
       localStorage.setItem('admin-testimonials', JSON.stringify(testimonials))
-      
-      // Salvar fotos
       localStorage.setItem('admin-photos', JSON.stringify(photos))
-      
       console.log('Conteúdo salvo com sucesso!')
     } catch (error) {
       console.error('Erro ao salvar conteúdo:', error)
       throw error
     }
-  }, [content, services, testimonials])
+  }, [content, services, testimonials, photos])
 
+  // Valor do contexto
   const value = useMemo(() => ({
+    // Estados
     content,
     services,
     testimonials,
     photos,
     isEditing,
+    
+    // Funções de controle
     setIsEditing,
     toggleEditing,
     updateContent,
     saveContent,
+    
+    // CRUD de serviços
     addService,
     updateService,
     deleteService,
+    
+    // CRUD de depoimentos
     addTestimonial,
     updateTestimonial,
     deleteTestimonial,
+    
+    // CRUD de fotos
     addPhoto,
     updatePhoto,
     deletePhoto,
+    
+    // CRUD de equipe
     addTeamMember,
     updateTeamMember,
     deleteTeamMember

@@ -38,50 +38,7 @@ const Services = () => {
     description: service.description,
     features: [], // Simplified for now
     color: 'from-blue-500 to-blue-600'
-  })) : [
-    {
-      icon: Scale,
-      title: 'Direito Civil',
-      description: 'Contratos, responsabilidade civil, direito de família e sucessões com expertise comprovada.',
-      features: ['Contratos e Acordos', 'Responsabilidade Civil', 'Direito de Família', 'Sucessões'],
-      color: 'from-blue-500 to-blue-600'
-    },
-    {
-      icon: Briefcase,
-      title: 'Direito Trabalhista',
-      description: 'Defesa dos direitos trabalhistas, rescisões, acordos coletivos e consultoria empresarial.',
-      features: ['Rescisões Trabalhistas', 'Acordos Coletivos', 'Consultoria Empresarial', 'Defesa em Ações'],
-      color: 'from-green-500 to-green-600'
-    },
-    {
-      icon: Building2,
-      title: 'Direito Empresarial',
-      description: 'Constituição de empresas, contratos comerciais, recuperação judicial e compliance.',
-      features: ['Constituição de Empresas', 'Contratos Comerciais', 'Recuperação Judicial', 'Compliance'],
-      color: 'from-purple-500 to-purple-600'
-    },
-    {
-      icon: Users,
-      title: 'Direito do Consumidor',
-      description: 'Defesa dos direitos do consumidor, relações de consumo e responsabilidade do fornecedor.',
-      features: ['Defesa do Consumidor', 'Relações de Consumo', 'Responsabilidade Civil', 'Ações Coletivas'],
-      color: 'from-orange-500 to-orange-600'
-    },
-    {
-      icon: FileText,
-      title: 'Direito Tributário',
-      description: 'Planejamento tributário, defesa em execuções fiscais e consultoria em obrigações tributárias.',
-      features: ['Planejamento Tributário', 'Execuções Fiscais', 'Consultoria Tributária', 'Recuperação de Créditos'],
-      color: 'from-red-500 to-red-600'
-    },
-    {
-      icon: Shield,
-      title: 'Consultoria Jurídica',
-      description: 'Consultoria preventiva, análise de riscos e orientação estratégica para empresas e pessoas físicas.',
-      features: ['Consultoria Preventiva', 'Análise de Riscos', 'Orientação Estratégica', 'Due Diligence'],
-      color: 'from-indigo-500 to-indigo-600'
-    }
-  ]
+  })) :[]
 
   const containerVariants = {
     hidden: { opacity: 0 },

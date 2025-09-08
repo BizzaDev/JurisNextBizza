@@ -310,7 +310,13 @@ const CardManager = React.memo(({
         <div className="mb-6">
           <CardForm
             card={newCard}
-            onSave={handleAdd}
+            onSave={(formData) => {
+              if (formData.title && formData.description) {
+                onAdd(formData)
+                setNewCard({ title: '', description: '', icon: 'Scale' })
+                setIsAdding(false)
+              }
+            }}
             onCancel={() => setIsAdding(false)}
             isNew={true}
           />
