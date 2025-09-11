@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { createServiceCard, deleteServiceCard, selectAllServiceCards, updateServiceCard } from '../services/cads/services-cards';
+import { deleteMember, getMembers, saveMemberToDatabase, updateMember } from '../services/members/members-service';
+import { base64ToBlob } from '../utils/photo-convert';
 
 const ContentContext = createContext()
 
@@ -201,6 +203,7 @@ export const ContentProvider = ({ children }) => {
         
         // Carregar serviços do banco de dados
         await getAllServices()
+        await getAllTeamMembers()
         
       } catch (error) {
         console.error('Error loading data:', error)
@@ -340,15 +343,21 @@ export const ContentProvider = ({ children }) => {
   }, [])
 
   // Funções CRUD para equipe
-  const addTeamMember = useCallback((memberData) => {
+  const addTeamMember = useCallback(async (memberData) => {
+    let photoBlob = null
+    if (memberData.photo) {
+      photoBlob = base64ToBlob(memberData.photo)
+    }
+    const id = crypto.randomUUID()
     const newMember = {
-      id: Date.now(),
+      id: id,
       name: memberData.name || "Novo Membro",
       role: memberData.role || "Cargo",
       specialty: memberData.specialty || "Especialidade",
       experience: memberData.experience || "0 anos",
-      photo: memberData.photo || null
+      photo: photoBlob || null
     }
+   
     setContent(prev => ({
       ...prev,
       about: {
@@ -356,28 +365,40 @@ export const ContentProvider = ({ children }) => {
         team: [...prev.about.team, newMember]
       }
     }))
+
+    await saveMemberToDatabase(newMember)
   }, [])
 
-  const updateTeamMember = useCallback((id, memberData) => {
-    setContent(prev => ({
-      ...prev,
-      about: {
-        ...prev.about,
-        team: prev.about.team.map(member => 
-          member.id === id ? { ...member, ...memberData } : member
-        )
-      }
-    }))
+  const getAllTeamMembers = useCallback(async () => {
+    try {
+      const members = await getMembers()
+      setContent(prev => ({
+        ...prev,
+        about: {
+          ...prev.about,
+          team: members.map(member => ({
+            id: member.id,
+            name: member.name,
+            role: member.role,
+            specialty: member.specialty,
+            experience: member.experience.toString(),
+            photo: member.photo_url // Usar a URL da foto do banco
+          }))
+        }
+      }))
+    } catch (error) {
+      console.error('Erro ao carregar membros da equipe:', error)
+    }
   }, [])
 
-  const deleteTeamMember = useCallback((id) => {
-    setContent(prev => ({
-      ...prev,
-      about: {
-        ...prev.about,
-        team: prev.about.team.filter(member => member.id !== id)
-      }
-    }))
+  const updateTeamMember = useCallback(async (id, memberData) => {
+    await updateMember(id, memberData)
+    await getAllTeamMembers()
+  }, [])
+
+  const deleteTeamMember = useCallback(async (id) => {
+    await deleteMember(id)
+    await getAllTeamMembers()
   }, [])
 
   // Controle de edição
