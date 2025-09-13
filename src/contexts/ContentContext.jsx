@@ -25,7 +25,7 @@ const defaultData = {
       hours: "Segunda a Sexta: 8h às 18h"
     },
     hero: {
-      title: "Defendemos seus direitos com excelênciaaa",
+      title: "Defendemos seus direitos com excelência",
       subtitle: "Especialistas em direito civil, trabalhista e empresarial. Oferecemos soluções jurídicas personalizadas com transparência, agilidade e resultados comprovados.",
       description: "Oferecemos serviços jurídicos especializados para empresas e pessoas físicas, garantindo a melhor defesa dos seus interesses.",
       protectionTitle: "Proteção Legal",
@@ -176,7 +176,41 @@ const defaultData = {
       rating: 5
     }
   ],
-  photos: []
+  photos: [
+    {
+      id: 1,
+      name: "Maria Silva Santos",
+      role: "Aposentada",
+      description: "Caso: Ação de Revisão de Benefício Previdenciário. Cliente aposentada por invalidez que teve seu benefício negado indevidamente. Conseguimos comprovar a incapacidade através de laudos médicos e testemunhas, resultando na concessão do benefício com pagamento retroativo de 5 anos.",
+      website: null,
+      imageUrl: "https://i.pinimg.com/736x/eb/76/a4/eb76a46ab920d056b02d203ca95e9a22.jpg",
+      title: "Maria Silva Santos",
+      testimonial: "Dr. João me salvou! Estava há anos tentando conseguir minha aposentadoria e ele resolveu tudo em 8 meses. Recebi todos os valores atrasados e agora tenho minha dignidade de volta.",
+      rating: 5
+    },
+    {
+      id: 2,
+      name: "Carlos Eduardo Mendes",
+      role: "Empresário",
+      description: "Caso: Defesa em Ação Trabalhista. Empresário do setor de construção civil enfrentando 15 ações trabalhistas por supostas horas extras não pagas. Conseguimos comprovar que os funcionários eram autônomos através de contratos e testemunhas, resultando na improcedência de todas as ações.",
+      website: null,
+      imageUrl: "https://i.pinimg.com/736x/dd/53/43/dd5343b1af6862a015633ff7338880e7.jpg",
+      title: "Carlos Eduardo Mendes",
+      testimonial: "Excelente trabalho! Dr. João me defendeu em 15 processos trabalhistas e ganhamos todos. Sua estratégia foi fundamental para provar que meus funcionários eram autônomos. Recomendo de olhos fechados!",
+      rating: 5
+    },
+    {
+      id: 3,
+      name: "Ana Paula Rodrigues",
+      role: "Mãe Solteira",
+      description: "Caso: Ação de Alimentos e Reconhecimento de Paternidade. Mãe solteira buscando pensão alimentícia para filho de 3 anos. O pai negava a paternidade, mas através de exame de DNA e comprovação de vínculo afetivo, conseguimos o reconhecimento da paternidade e pensão de R$ 800,00 mensais.",
+      website: null,
+      imageUrl: "https://i.pinimg.com/736x/27/e7/86/27e786556713580f28b971487f002d52.jpg",
+      title: "Ana Paula Rodrigues",
+      testimonial: "Dr. João é um anjo! Me ajudou a conseguir a pensão do meu filho quando o pai não queria assumir. Agora meu filho tem o direito de ter o pai reconhecido e receber o que é dele por direito.",
+      rating: 5
+    }
+  ]
 }
 
 export const ContentProvider = ({ children }) => {
